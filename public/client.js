@@ -1110,7 +1110,11 @@ var LZString = __webpack_require__(12);
 var playerIdKey = 'snake-shift-player-id';
 var lastScore = 0;
 var key;
+var isEnableLeaderboard = true;
 function init() {
+    if (!isEnableLeaderboard) {
+        return;
+    }
     try {
         var playerIdStorage = localStorage.getItem(playerIdKey);
         if (playerIdStorage == null) {
@@ -1133,6 +1137,9 @@ exports.init = init;
 function get(isGettingLast, isGettingBest) {
     if (isGettingLast === void 0) { isGettingLast = false; }
     if (isGettingBest === void 0) { isGettingBest = false; }
+    if (!isEnableLeaderboard) {
+        return;
+    }
     try {
         if (exports.playerId == null) {
             exports.scores = null;
@@ -1162,6 +1169,9 @@ function get(isGettingLast, isGettingBest) {
 }
 exports.get = get;
 function set(score) {
+    if (!isEnableLeaderboard) {
+        return;
+    }
     try {
         lastScore = score;
         window.fetch("/api/key?playerId=" + exports.playerId).

@@ -6,8 +6,12 @@ export let playerId: number;
 const playerIdKey = 'snake-shift-player-id';
 let lastScore = 0;
 let key: string;
+const isEnableLeaderboard = true;
 
 export function init() {
+  if (!isEnableLeaderboard) {
+    return;
+  }
   try {
     const playerIdStorage = localStorage.getItem(playerIdKey);
     if (playerIdStorage == null) {
@@ -26,6 +30,9 @@ export function init() {
 }
 
 export function get(isGettingLast = false, isGettingBest = false) {
+  if (!isEnableLeaderboard) {
+    return;
+  }
   try {
     if (playerId == null) {
       scores = null;
@@ -53,6 +60,9 @@ export function get(isGettingLast = false, isGettingBest = false) {
 }
 
 export function set(score: number) {
+  if (!isEnableLeaderboard) {
+    return;
+  }
   try {
     lastScore = score;
     window.fetch(`/api/key?playerId=${playerId}`).
