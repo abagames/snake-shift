@@ -26,8 +26,7 @@
     "body-parser": "^1.17.2",
     "express": "^4.15.4",
     "lodash": "^4.17.4",
-    "lz-string": "^1.4.4",
-    "tone": "^0.11.11"
+    "lz-string": "^1.4.4"
   },
   "engines": {
     "node": "6.x"
