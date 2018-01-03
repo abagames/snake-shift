@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "outDir": "."
+  },
+  "exclude": [
+    "node_modules",
+    "web_modules",
+    "src/client"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "name": "snake-shift",
+  "version": "1.0.0",
+  "description": "Lightning fast snake game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build_client": "webpack --env.build",
+    "build_server": "tsc -p ./tsconfig_server.json",
+    "watch_client": "webpack-dev-server --inline",
+    "watch_server": "nodemon --watch ./src/server --exec ts-node src/server/server.ts"
+  },
+  "author": "ABA",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/express": "^4.0.36",
+    "@types/lodash": "^4.14.91",
+    "awesome-typescript-loader": "^3.2.2",
+    "nodemon": "^1.11.0",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.4.2",
+    "webpack": "^3.5.3",
+    "webpack-dev-server": "^2.7.1"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.4",
+    "lodash": "^4.17.4",
+    "lz-string": "^1.4.4",
+    "tone": "^0.11.11"
+  },
+  "engines": {
+    "node": "6.x"
+  }
+}
