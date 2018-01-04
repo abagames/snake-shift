@@ -4,6 +4,7 @@ import { Vector } from './util';
 import { playEmptySound } from './sound';
 
 export let cursorPos: Vector;
+export let pressedCursorPos: Vector;
 export let isPressed = false;
 export let isJustPressed = false;
 export let stick: Vector;
@@ -51,6 +52,7 @@ export function init(_canvas: HTMLCanvasElement, _pixelSize: Vector) {
     isKeyPressing[e.keyCode] = false;
   };
   cursorPos = new Vector();
+  pressedCursorPos = new Vector();
   stick = new Vector();
   isInitialized = true;
 }
@@ -66,6 +68,11 @@ export function useCursorAsStick(_isUsingCursotAsStick = true) {
 export function clearJustPressed() {
   isJustPressed = false;
   isPressed = true;
+}
+
+export function resetPressedCursorPos(ratio = 1) {
+  pressedCursorPos.x += (cursorPos.x - pressedCursorPos.x) * ratio;
+  pressedCursorPos.y += (cursorPos.y - pressedCursorPos.y) * ratio;
 }
 
 export function update() {
@@ -95,11 +102,15 @@ export function update() {
     stickAngle++;
   }
   if (isUsingCursotAsStick && isCursorDown) {
-    const sa = Math.atan2(cursorPos.y - (pixelSize.y / 2), cursorPos.x - (pixelSize.x / 2));
-    stickAngle = g.wrap(Math.round(sa / (Math.PI / 2) * 2), 0, 8);
-    stick.set();
-    stick.addAngle(stickAngle * (Math.PI / 2), 1);
-    stickAngle++;
+    if (cursorPos.distancteTo(pressedCursorPos) > 32) {
+      const sa = Math.atan2(cursorPos.y - pressedCursorPos.y, cursorPos.x - pressedCursorPos.x);
+      stickAngle = g.wrap(Math.round(sa / (Math.PI / 2) * 2), 0, 8);
+      stick.set();
+      stick.addAngle(stickAngle * (Math.PI / 2), 1);
+      stickAngle++;
+    } else {
+      pressedCursorPos
+    }
   }
   _.forEach(buttonKeys, k => {
     if (isKeyPressing[k]) {
@@ -112,6 +123,7 @@ export function update() {
 
 function onCursorDown(x, y) {
   calcCursorPos(x, y, cursorPos);
+  pressedCursorPos.set(cursorPos);
   isCursorDown = true;
 }
 

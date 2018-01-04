@@ -47,7 +47,7 @@ function begin() {
   isPressing = true;
   if (isShowingInstruction) {
     lp.locate(2, 2);
-    lp.print('PRESS OR TAP');
+    lp.print('PRESS OR SWIPE');
     lp.locate(4, 3);
     lp.print('UP/LEFT/RIGHT/DOWN TO MOVE');
   }
@@ -112,6 +112,7 @@ function update() {
         if (moveSnake() === false) {
           if (isPressed && i > 0) {
             moveSound.play();
+            g.ui.resetPressedCursorPos();
           }
           break;
         }
@@ -119,7 +120,7 @@ function update() {
       if (isShowingInstruction) {
         lp.color(7);
         lp.locate(2, 2);
-        lp.print('            ');
+        lp.print('              ');
         lp.locate(4, 3);
         lp.print('                          ');
         isShowingInstruction = false;
@@ -128,6 +129,7 @@ function update() {
   } else {
     isPressing = false;
   }
+  g.ui.resetPressedCursorPos(0.1);
   itemScore = Math.floor(itemScore * 0.99);
   if (itemScore <= 0) {
     itemScore = 1;

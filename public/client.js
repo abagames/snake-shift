@@ -387,6 +387,11 @@ var Vector = /** @class */ (function () {
     Vector.prototype.mag = function () {
         return Math.sqrt(this.magSq());
     };
+    Vector.prototype.distancteTo = function (to) {
+        var ox = this.x - to.x;
+        var oy = this.y - to.y;
+        return Math.sqrt(ox * ox + oy * oy);
+    };
     Vector.prototype.getAngle = function (to) {
         if (to === void 0) { to = null; }
         return to == null ? Math.atan2(this.y, this.x) : Math.atan2(to.y - this.y, to.x - this.x);
@@ -684,7 +689,7 @@ function begin() {
     isPressing = true;
     if (isShowingInstruction) {
         lp.locate(2, 2);
-        lp.print('PRESS OR TAP');
+        lp.print('PRESS OR SWIPE');
         lp.locate(4, 3);
         lp.print('UP/LEFT/RIGHT/DOWN TO MOVE');
     }
@@ -748,6 +753,7 @@ function update() {
                 if (moveSnake() === false) {
                     if (isPressed && i > 0) {
                         moveSound.play();
+                        g.ui.resetPressedCursorPos();
                     }
                     break;
                 }
@@ -755,7 +761,7 @@ function update() {
             if (isShowingInstruction) {
                 lp.color(7);
                 lp.locate(2, 2);
-                lp.print('            ');
+                lp.print('              ');
                 lp.locate(4, 3);
                 lp.print('                          ');
                 isShowingInstruction = false;
@@ -765,6 +771,7 @@ function update() {
     else {
         isPressing = false;
     }
+    g.ui.resetPressedCursorPos(0.1);
     itemScore = Math.floor(itemScore * 0.99);
     if (itemScore <= 0) {
         itemScore = 1;
@@ -983,6 +990,7 @@ function init(_canvas, _pixelSize) {
         isKeyPressing[e.keyCode] = false;
     };
     exports.cursorPos = new util_1.Vector();
+    exports.pressedCursorPos = new util_1.Vector();
     exports.stick = new util_1.Vector();
     isInitialized = true;
 }
@@ -1002,6 +1010,12 @@ function clearJustPressed() {
     exports.isPressed = true;
 }
 exports.clearJustPressed = clearJustPressed;
+function resetPressedCursorPos(ratio) {
+    if (ratio === void 0) { ratio = 1; }
+    exports.pressedCursorPos.x += (exports.cursorPos.x - exports.pressedCursorPos.x) * ratio;
+    exports.pressedCursorPos.y += (exports.cursorPos.y - exports.pressedCursorPos.y) * ratio;
+}
+exports.resetPressedCursorPos = resetPressedCursorPos;
 function update() {
     if (!isInitialized) {
         return;
@@ -1029,11 +1043,16 @@ function update() {
         exports.stickAngle++;
     }
     if (isUsingCursotAsStick && exports.isCursorDown) {
-        var sa = Math.atan2(exports.cursorPos.y - (pixelSize.y / 2), exports.cursorPos.x - (pixelSize.x / 2));
-        exports.stickAngle = g.wrap(Math.round(sa / (Math.PI / 2) * 2), 0, 8);
-        exports.stick.set();
-        exports.stick.addAngle(exports.stickAngle * (Math.PI / 2), 1);
-        exports.stickAngle++;
+        if (exports.cursorPos.distancteTo(exports.pressedCursorPos) > 32) {
+            var sa = Math.atan2(exports.cursorPos.y - exports.pressedCursorPos.y, exports.cursorPos.x - exports.pressedCursorPos.x);
+            exports.stickAngle = g.wrap(Math.round(sa / (Math.PI / 2) * 2), 0, 8);
+            exports.stick.set();
+            exports.stick.addAngle(exports.stickAngle * (Math.PI / 2), 1);
+            exports.stickAngle++;
+        }
+        else {
+            exports.pressedCursorPos;
+        }
     }
     _.forEach(buttonKeys, function (k) {
         if (isKeyPressing[k]) {
@@ -1046,6 +1065,7 @@ function update() {
 exports.update = update;
 function onCursorDown(x, y) {
     calcCursorPos(x, y, exports.cursorPos);
+    exports.pressedCursorPos.set(exports.cursorPos);
     exports.isCursorDown = true;
 }
 function onCursorMove(x, y) {

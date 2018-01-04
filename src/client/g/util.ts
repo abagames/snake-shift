@@ -70,6 +70,12 @@ export class Vector {
     return Math.sqrt(this.magSq());
   }
 
+  distancteTo(to: Vector) {
+    const ox = this.x - to.x;
+    const oy = this.y - to.y;
+    return Math.sqrt(ox * ox + oy * oy);
+  }
+
   getAngle(to: Vector = null) {
     return to == null ? Math.atan2(this.y, this.x) : Math.atan2(to.y - this.y, to.x - this.x);
   }
