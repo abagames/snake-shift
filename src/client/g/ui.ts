@@ -15,6 +15,7 @@ let pixelSize: Vector;
 let isInitialized = false;
 let isUsingStickKeysAsButton = false;
 let isUsingCursotAsStick = false;
+let isFourWaysStick = false;
 const isKeyPressing = _.times(256, () => false);
 const stickKeys = [[39, 68, 102], [40, 83, 101, 98], [37, 65, 100], [38, 87, 104]];
 const stickXys = [[1, 0], [0, 1], [-1, 0], [0, -1]];
@@ -65,6 +66,10 @@ export function useCursorAsStick(_isUsingCursotAsStick = true) {
   isUsingCursotAsStick = _isUsingCursotAsStick;
 }
 
+export function ForrWaysStick(_isFourWaysStick = true) {
+  isFourWaysStick = _isFourWaysStick;
+}
+
 export function clearJustPressed() {
   isJustPressed = false;
   isPressed = true;
@@ -96,20 +101,11 @@ export function update() {
   });
   stickAngle = 0;
   if (stick.magSq() > 0) {
-    stickAngle = g.wrap(Math.round(stick.getAngle() / (Math.PI / 2) * 2), 0, 8);
-    stick.set();
-    stick.addAngle(stickAngle * (Math.PI / 2), 1);
-    stickAngle++;
+    setStickAngle(stick.getAngle());
   }
   if (isUsingCursotAsStick && isCursorDown) {
     if (cursorPos.distancteTo(pressedCursorPos) > 32) {
-      const sa = Math.atan2(cursorPos.y - pressedCursorPos.y, cursorPos.x - pressedCursorPos.x);
-      stickAngle = g.wrap(Math.round(sa / (Math.PI / 2) * 2), 0, 8);
-      stick.set();
-      stick.addAngle(stickAngle * (Math.PI / 2), 1);
-      stickAngle++;
-    } else {
-      pressedCursorPos
+      setStickAngle(pressedCursorPos.getAngle(cursorPos));
     }
   }
   _.forEach(buttonKeys, k => {
@@ -119,6 +115,15 @@ export function update() {
     }
   });
   isJustPressed = (!pp && isPressed);
+}
+
+function setStickAngle(a: number) {
+  const wayAngle = isFourWaysStick ? Math.PI / 2 : Math.PI / 4;
+  const angleStep = isFourWaysStick ? 2 : 1;
+  stickAngle = g.wrap(Math.round(a / wayAngle) * angleStep, 0, 8);
+  stick.set();
+  stick.addAngle(stickAngle * wayAngle, 1);
+  stickAngle++;
 }
 
 function onCursorDown(x, y) {

@@ -954,6 +954,7 @@ var pixelSize;
 var isInitialized = false;
 var isUsingStickKeysAsButton = false;
 var isUsingCursotAsStick = false;
+var isFourWaysStick = false;
 var isKeyPressing = _.times(256, function () { return false; });
 var stickKeys = [[39, 68, 102], [40, 83, 101, 98], [37, 65, 100], [38, 87, 104]];
 var stickXys = [[1, 0], [0, 1], [-1, 0], [0, -1]];
@@ -1005,6 +1006,11 @@ function useCursorAsStick(_isUsingCursotAsStick) {
     isUsingCursotAsStick = _isUsingCursotAsStick;
 }
 exports.useCursorAsStick = useCursorAsStick;
+function ForrWaysStick(_isFourWaysStick) {
+    if (_isFourWaysStick === void 0) { _isFourWaysStick = true; }
+    isFourWaysStick = _isFourWaysStick;
+}
+exports.ForrWaysStick = ForrWaysStick;
 function clearJustPressed() {
     exports.isJustPressed = false;
     exports.isPressed = true;
@@ -1037,21 +1043,11 @@ function update() {
     });
     exports.stickAngle = 0;
     if (exports.stick.magSq() > 0) {
-        exports.stickAngle = g.wrap(Math.round(exports.stick.getAngle() / (Math.PI / 2) * 2), 0, 8);
-        exports.stick.set();
-        exports.stick.addAngle(exports.stickAngle * (Math.PI / 2), 1);
-        exports.stickAngle++;
+        setStickAngle(exports.stick.getAngle());
     }
     if (isUsingCursotAsStick && exports.isCursorDown) {
         if (exports.cursorPos.distancteTo(exports.pressedCursorPos) > 32) {
-            var sa = Math.atan2(exports.cursorPos.y - exports.pressedCursorPos.y, exports.cursorPos.x - exports.pressedCursorPos.x);
-            exports.stickAngle = g.wrap(Math.round(sa / (Math.PI / 2) * 2), 0, 8);
-            exports.stick.set();
-            exports.stick.addAngle(exports.stickAngle * (Math.PI / 2), 1);
-            exports.stickAngle++;
-        }
-        else {
-            exports.pressedCursorPos;
+            setStickAngle(exports.pressedCursorPos.getAngle(exports.cursorPos));
         }
     }
     _.forEach(buttonKeys, function (k) {
@@ -1063,6 +1059,14 @@ function update() {
     exports.isJustPressed = (!pp && exports.isPressed);
 }
 exports.update = update;
+function setStickAngle(a) {
+    var wayAngle = isFourWaysStick ? Math.PI / 2 : Math.PI / 4;
+    var angleStep = isFourWaysStick ? 2 : 1;
+    exports.stickAngle = g.wrap(Math.round(a / wayAngle) * angleStep, 0, 8);
+    exports.stick.set();
+    exports.stick.addAngle(exports.stickAngle * wayAngle, 1);
+    exports.stickAngle++;
+}
 function onCursorDown(x, y) {
     calcCursorPos(x, y, exports.cursorPos);
     exports.pressedCursorPos.set(exports.cursorPos);
