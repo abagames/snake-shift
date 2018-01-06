@@ -648,13 +648,11 @@ var lp = __webpack_require__(3);
 var g = __webpack_require__(1);
 window.onload = function () {
     g.init(function () {
-        g.ui.useStickKeyAsButton();
+        g.ui.fourWaysStick();
         g.setGenerationSeeds(550887);
         createSounds();
         /*g.enableDebug(() => {
-          bgmSound.stop();
           createSounds();
-          bgmSound.play();
         });*/
     }, title, begin, update);
 };
@@ -826,7 +824,7 @@ function title() {
     lp.locate(3, 1);
     lp.print("\n##@ #  #  ##  #  @ ####\n#   ## # #  # # #  #\n### ## # #  # ##   ###\n  # # ## #### # #  #\n### @ ## #  @ #  # ######@\n");
     lp.locate(10, 7);
-    lp.print("\n   ### #  # @  ###@ @###\n   #   #  # #  #     #\n   ### #### #  ###   #\n     # #  # #  #     #\n@##### #  @ #  #     #\n    \n");
+    lp.print("\n   ### #  # @  ###@ @###\n   #   #  # #  #     #\n   ### #### #  ###   #\n     # #  # #  #     #\n@##### #  @ #  #     #\n");
     var t = g.ticks % 60;
     lp.color(7);
     lp.locate(10, 16);
@@ -1006,11 +1004,11 @@ function useCursorAsStick(_isUsingCursotAsStick) {
     isUsingCursotAsStick = _isUsingCursotAsStick;
 }
 exports.useCursorAsStick = useCursorAsStick;
-function ForrWaysStick(_isFourWaysStick) {
+function fourWaysStick(_isFourWaysStick) {
     if (_isFourWaysStick === void 0) { _isFourWaysStick = true; }
     isFourWaysStick = _isFourWaysStick;
 }
-exports.ForrWaysStick = ForrWaysStick;
+exports.fourWaysStick = fourWaysStick;
 function clearJustPressed() {
     exports.isJustPressed = false;
     exports.isPressed = true;

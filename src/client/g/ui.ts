@@ -66,7 +66,7 @@ export function useCursorAsStick(_isUsingCursotAsStick = true) {
   isUsingCursotAsStick = _isUsingCursotAsStick;
 }
 
-export function ForrWaysStick(_isFourWaysStick = true) {
+export function fourWaysStick(_isFourWaysStick = true) {
   isFourWaysStick = _isFourWaysStick;
 }
 

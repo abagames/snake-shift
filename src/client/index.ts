@@ -4,13 +4,11 @@ import * as g from './g/index';
 
 window.onload = () => {
   g.init(() => {
-    g.ui.useStickKeyAsButton();
+    g.ui.fourWaysStick();
     g.setGenerationSeeds(550887);
     createSounds();
     /*g.enableDebug(() => {
-      bgmSound.stop();
       createSounds();
-      bgmSound.play();
     });*/
   }, title, begin, update);
 };
@@ -199,7 +197,6 @@ function title() {
    ### #### #  ###   #
      # #  # #  #     #
 @##### #  @ #  #     #
-    
 `);
   var t = g.ticks % 60;
   lp.color(7);
